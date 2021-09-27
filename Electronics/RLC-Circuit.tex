@@ -1,0 +1,33 @@
+\documentclass{standalone}
+
+% Package for circuits
+\usepackage{circuitikz}
+
+%Specifies how thick the bipoles are, e.g. the capacitor, the inductor, ...
+\ctikzset{bipoles/thickness=1.2}
+
+\newcommand{\midlabelline}[3]{
+   \node (midlabel) at ($ (#1)!.5!(#2) $) {#3};
+   \draw[latex-] (#1) --  (midlabel);
+   \draw[-latex] (midlabel) -- (#2);
+}
+
+
+\begin{document}
+
+	\begin{circuitikz}
+		% Circuit
+		\draw[line width=0.8]
+		 (2,7) to [sinusoidal voltage source, l_=$V_S$, i=$I$] (2,1)
+		 (2,7) to [resistor, l_=$R$] ++(6,0) to [inductor, l_=$L$] ++(0,-6) to [capacitor, l_=$C$] +(-6,0) ;
+		 
+		% Voltage Infos
+		\midlabelline{2,8}{8,8}{$V_R$}
+		\midlabelline{9,7}{9,1}{$V_L$}
+		\midlabelline{2,0}{8,0}{$V_C$}
+		
+		% Grid
+%		\draw[help lines] (0,0) grid (10,10)	;
+	\end{circuitikz}
+	
+\end{document}
