@@ -1,0 +1,53 @@
+\documentclass[border=2pt]{standalone}
+
+% Drawing
+\usepackage{tikz} 
+\usepackage{tikz-3dplot}
+
+% Tikz Library
+\usetikzlibrary{angles, quotes}
+
+% Styles
+\tikzset{>=latex}
+
+% Define Color
+\definecolor{amber}{rgb}{1.0, 0.5, 0}
+
+% Notation
+\usepackage{physics}
+
+\begin{document}
+	
+	% Set the Angles of the Axis
+	\tdplotsetmaincoords{57}{120}
+	
+	\begin{tikzpicture}[scale=2,tdplot_main_coords]
+		% Axis
+	    \draw[->] (2,0,0) -- (-2,0,0) node[above right]{$y$};
+	    \draw[->] (0,-1.3,0) -- (0,1.5,0)coordinate(C) node[right]{$x$};
+	    \draw[->] (0,0,0)coordinate(B) -- (0,0,4) node[above]{$z$};
+	    
+	    % Circural Loop
+		\draw[line width = 1.5mm, amber] (0,0,0) circle [radius=1];
+		
+		% Node
+		\draw (0,0,0) -- +(0.8,0,0) node [pos=0.6, above left] {\small$R$} ;
+		
+		% Current Direction
+		\draw [line width = 0.7mm, blue, ->] (0.3,-1.2,0) arc (280:340:1.1) node [black, pos=0.4, left] {$I$};
+		
+		% Point
+		\draw plot [mark=*, mark size=0.85] coordinates{(0,0,3)} node [left] {\small$P$}; 
+		
+		% Vectors
+		\draw[->,very thick] (0,0,0) -- (0,0,3) node [pos=0.5, left] {$\vb{r}_p$};
+		\draw[very thick, ->] (-0.4,0.92,0) -- (-0.77,0.7,0) node[right, pos=0.4] {\small$\dd\vb{s}$};
+		\draw[very thick, ->] (-0.52,0.846,0) -- (0,0,3) node[right, pos=0.6] {\small$\vb{r}$};
+		\draw[very thick, ->] (0,0,0) -- (-0.51,0.846,0)coordinate(A) node[above, pos=0.5] {\small$\vb{r'}$};
+		\draw[thick,->] (0,0,3) -- (-1,-0.2,2.8) node [below right, pos=0.6] {\small$\dd\vb{B}$};
+		
+		% Angle
+		\pic[draw, angle radius=7mm, "\small$\phi'$", angle eccentricity=1.7, thick] {angle=C--B--A};
+	\end{tikzpicture}
+	
+\end{document}
