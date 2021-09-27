@@ -1,0 +1,136 @@
+\documentclass[border=3pt]{standalone}
+
+\usepackage{tikz}  
+\usepackage{tikz-3dplot} 
+
+%Cylindrical Coordinate
+\newcommand{\cylindricalcoordinate}[4]{%
+\coordinate (#4) at ({#1*cos(#2)},{#1*sin(#2)},{#3});%
+\coordinate (#4xy) at ({#1*cos(#2)},{#1*sin(#2)},0);%
+}
+
+\begin{document}
+
+%Axis Angles
+\tdplotsetmaincoords{70}{110}
+
+%Macros
+\pgfmathsetmacro{\rvec}{5}
+\pgfmathsetmacro{\phivec}{45}
+\pgfmathsetmacro{\zvec}{4}
+
+\pgfmathsetmacro{\drvec}{1.5}
+\pgfmathsetmacro{\dphivec}{20}
+\pgfmathsetmacro{\dzvec}{1}
+
+%Layers
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+
+\pgfsetlayers{background, main, foreground}
+
+\begin{tikzpicture}[tdplot_main_coords]
+
+%Coordinates
+\coordinate (O) at (0,0,0);
+%%
+\cylindricalcoordinate{\rvec}{\phivec}{\zvec}{A}
+\cylindricalcoordinate{\rvec}{\phivec}{(\zvec+\dzvec)}{B}
+\cylindricalcoordinate{\rvec}{(\phivec+\dphivec)}{\zvec}{C}
+\cylindricalcoordinate{\rvec}{(\phivec+\dphivec)}{(\zvec+\dzvec)}{D}
+%%
+\cylindricalcoordinate{(\rvec+\drvec)}{\phivec}{\zvec}{A'}
+\cylindricalcoordinate{(\rvec+\drvec)}{\phivec}{(\zvec+\dzvec)}{B'}
+\cylindricalcoordinate{(\rvec+\drvec)}{(\phivec+\dphivec)}{\zvec}{C'}
+\cylindricalcoordinate{(\rvec+\drvec)}{(\phivec+\dphivec)}{(\zvec+\dzvec)}{D'}
+%%%Nodes
+%\node at (A) {A};
+%\node at (B) {B};
+%\node at (C) {C};
+%\node at (D) {D};
+%\node at (A') {A'};
+%\node at (B') {B'};
+%\node at (C') {C'};
+%\node at (D') {D'};
+
+%Axis
+\begin{pgfonlayer}{background}
+	\draw[thick,-latex] (0,0,0) -- (6,0,0) node[pos=1.1]{$x$};
+	\draw[thick,-latex] (0,0,0) -- (0,6,0) node[pos=1.05]{$y$};
+	\draw[thick,-latex] (0,0,0) -- (0,0,7) node[pos=1.05]{$z$};
+\end{pgfonlayer}
+
+%Vectors
+\begin{pgfonlayer}{main}
+	\draw[blue, thick] (O) -- (A);
+	\draw[thick] (O) -- (Axy) node [pos=0.6, below left] {$\varpi$};
+	\draw (A) -- ($(A)-(Axy)$) node [left] {$z$};
+	\draw (B) -- ($(A)-(Axy)+(0,0,\dzvec)$) node [left] {$z+\mathrm{d}z$};
+	\draw (D) -- ($(A)-(Axy)+(0,0,\dzvec)$);
+\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+	\draw[dashed] (C) -- ($(A)-(Axy)$) node [left] {$z$};
+\end{pgfonlayer}
+
+%Help Lines
+\begin{pgfonlayer}{background}
+	\draw (A) -- (Axy);
+	\draw (A') -- (A'xy);
+	\draw[thick] (Axy) -- (A'xy) node [pos=0.6, below left] {$\mathrm{d}\varpi$};
+	%
+	\draw (O) -- (D'xy);
+	\draw[dashed] (C) -- (Dxy);	
+	\draw (C') -- (C'xy);
+	%%Arcs
+	\tdplotdrawarc{(0,0,0)}{\rvec}{\phivec}{\phivec+\dphivec}{}{}
+	\tdplotdrawarc{(0,0,0)}{\rvec+\drvec}{\phivec}{\phivec+\dphivec}{}{}
+\end{pgfonlayer}
+
+%Angles
+\begin{pgfonlayer}{foreground}
+	%Phi, dPhi
+	\tdplotdrawarc[-stealth]{(O)}{0.9}{0}{\phivec}{anchor=north}{$\phi$}
+	\tdplotdrawarc[-stealth]{(O)}{1.5}{\phivec}{\phivec + \dphivec}{}{}
+	\node at (1.4,1.9,0) {$\mathrm{d}\phi$};	
+\end{pgfonlayer}
+
+%Differential Volume
+
+%%Lines
+\begin{pgfonlayer}{foreground}
+	\draw[thick] (A) -- (B) -- (B') -- (A') -- cycle node [midway, below] {$\mathrm{d}\varpi$};
+	\draw[thick] (D) -- (D') -- (C') node [midway, right] {$\mathrm{d}z$};
+\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+	\draw[thick, dashed] (C') -- (C) -- (D);
+\end{pgfonlayer}
+
+%%Curved
+\begin{pgfonlayer}{background}
+	\tdplotdrawarc[thick, dashed]{(0,0,\zvec)}{\rvec} {\phivec}{\phivec+\dphivec}{}{}
+\end{pgfonlayer}
+\begin{pgfonlayer}{foreground}
+	\tdplotdrawarc[thick]{(0,0,\zvec+\dzvec)}{\rvec} {\phivec}{\phivec+\dphivec}{}{}
+	\node at (2.4,3.4,\zvec+\dzvec) {$\varpi\mathrm{d}\phi$};
+	\tdplotdrawarc[thick]{(0,0,\zvec+\dzvec)}{\rvec+\drvec} {\phivec}{\phivec+\dphivec}{}{}
+	\tdplotdrawarc[thick]{(0,0,\zvec)}{\rvec+\drvec} {\phivec}{\phivec+\dphivec}{}{}
+\end{pgfonlayer}
+
+%%Fill Color
+\begin{pgfonlayer}{main}
+	%Front
+	\fill[black, opacity=0.15] (B) to (B') to[bend right=4] (D') to (D) to[bend left=4] cycle;
+	\fill[black, opacity=0.6] (B') to[bend right=4] (D') to (C') to[bend left=4] (A') to cycle;
+	\fill[black, opacity=0.4] (B) to (B')  to (A') to (A) to cycle;
+\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+	%Back
+	\fill[black!50, opacity=0.5] (D) to (D') to (C') to (C) to cycle;
+	\fill[black!50, opacity=0.5] (B) to[bend right=4] (D) to (C) to[bend left=4] (A) to cycle;
+	\fill[black!50, opacity=0.5] (A) to (A') to[bend right=4] (C') to (C) to[bend left=4] cycle;
+\end{pgfonlayer}
+
+
+\end{tikzpicture}
+
+\end{document}
