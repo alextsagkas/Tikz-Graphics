@@ -1,0 +1,83 @@
+\documentclass[border=2pt]{standalone}
+
+% Circuits
+\usepackage{circuitikz}
+
+% Notation
+\usepackage{siunitx}
+
+% Define Color
+\definecolor{bluegray}{rgb}{0.4, 0.6, 0.8}
+
+% Define Lengths
+\def\dx{0.3}
+\def\dy{0.4667}
+\def\x{10.75}
+\def\xx{12.0}
+\def\y{9.0}
+
+\def\dX{0.6}
+\def\dY{1}
+\def\X{7.25}
+\def\XX{6.0}
+\def\Y{9}
+
+\begin{document}
+	
+	\begin{circuitikz}[scale=0.5]
+		% Grid
+%		\draw[help lines] (-1,-1) grid (18,14);
+		
+		% Core (Blue)
+		\draw[draw=black, line width = 2pt, fill = bluegray, even odd rule, rounded corners]
+			(6, -0.5) rectangle ++(6,12) (7.25, 1) rectangle ++(3.5,9);
+		
+		% Circuit
+		%% Left	
+		\draw[line width=1.5pt]
+		 (\X,\Y) -- (2,9) to [sV, line width=0.7pt, l_=$V_1$, i=$I_1$] (2,2) -- (\XX,2);
+		%% Right 
+		\draw[line width=1.5pt]
+		 (12,9) to [normal open switch, line width=0.7pt, l=$S$] (16,9)
+		  to [R, line width=0.7pt, l=$R_L$, i=$I_2$] (16,2) -- (\xx,2);
+		  
+		% Nodes
+		\node at (8.25,8) {$N_1$};
+		\node at (9.75,3) {$N_2$};
+		\draw[thick] (11.5,10.75) -- (10, 13) -- (9.5,13) node [left] {$\Phi_B$};
+			
+		% Cables (Black)	
+		%% Left
+		\foreach \i in {0,2,4}
+		{	
+			\draw[line width=1.5pt] (\X,\Y-\i*\dY) ..controls (\X+\dX, \Y-\i*\dY) and (\X+\dX,\Y-\dY-\i*\dY).. (\X,\Y-\dY-\i*\dY);
+			
+			\draw[line width=1.5pt] (\XX,\Y-\i*\dY-\dY) ..controls (\XX-\dX, \Y-\i*\dY-\dY) and (\XX-\dX,\Y-\i*\dY-2*\dY).. 
+								(\XX,\Y-\i*\dY-2*\dY);
+								
+			\draw[line width=1.5pt] (\XX,\Y-\i*\dY) -- (\X,\Y-\i*\dY);
+			
+			\draw[line width=1.5pt] (\XX,\Y-\i*\dY-2*\dY) -- (\X,\Y-\i*\dY-2*\dY);
+			
+			\draw[line width=1.5pt] (\X,\Y-\i*\dY-2*\dY) ..controls (\X+\dX, \Y-\i*\dY-2*\dY) and (\X+\dX,\Y-\dY-\i*\dY-2*\dY).. (\X,\Y-\dY-\i*\dY-2*\dY);
+
+		} 				
+		% Right
+		\foreach \i in {0,2,4,6,8,10,12}
+		{	
+			\draw[line width=1.5pt] (\x,\y-\i*\dy) ..controls (\x-\dx, \y-\i*\dy) and (\x-\dx,\y-\dy-\i*\dy).. (\x,\y-\dy-\i*\dy);
+			
+			\draw[line width=1.5pt] (\xx,\y-\i*\dy-\dy) ..controls (\xx+\dx, \y-\i*\dy-\dy) and (\xx+\dx,\y-\i*\dy-2*\dy).. 
+								(\xx,\y-\i*\dy-2*\dy);
+								
+			\draw[line width=1.5pt] (\xx,\y-\i*\dy) -- (\x,\y-\i*\dy);
+			
+			\draw[line width=1.5pt] (\x,\y-\i*\dy-2*\dy) ..controls (\x-\dx, \y-\i*\dy-2*\dy) and (\x-\dx,\y-\dy-\i*\dy-2*\dy).. (\x,\y-\dy-\i*\dy-2*\dy);
+			
+			\draw[line width=1.5pt] (\xx,\y-\i*\dy-2*\dy) -- (\x,\y-\i*\dy-2*\dy);
+
+		} 		
+	\end{circuitikz}
+
+	
+\end{document}
