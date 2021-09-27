@@ -1,0 +1,103 @@
+\documentclass[border=2pt]{standalone}
+
+% Circuit - Drawing
+\usepackage{circuitikz}
+
+% Notation
+\usepackage{siunitx}
+
+% Define Color
+\definecolor{bluegray}{rgb}{0.4, 0.6, 0.8}
+
+% Define Lenghts
+\def\dx{0.3}
+\def\dy{0.4667}
+\def\x{10.75}
+\def\xx{12.0}
+\def\y{9.0}
+%
+\def\dX{0.4}
+\def\dY{0.779}
+\def\X{7.25}
+\def\XX{6.0}
+\def\Y{9}
+
+% Tikz Library
+\usetikzlibrary{angles, quotes, shapes, decorations.markings, calc}
+
+% Style
+%% Arrow in the middle
+\tikzset{arrow inside/.style = {postaction=decorate,decoration={markings,mark=at position .52 with \arrow{latex}}}}
+
+\begin{document}
+	
+	\begin{circuitikz}[scale=0.5]
+		% Grid
+%		\draw[help lines] (-1,-1) grid (18,14);
+%		
+%		\foreach \i in {0,1,2,3,...,12}
+%		{
+%			\node at (-2,\i) {$\i$};
+%			\node at (\i,-2) {$\i$};
+%		}
+		
+		% Transformer
+		\draw[draw=black, line width = 2pt, fill = bluegray, even odd rule, rounded corners]
+			(6, -0.5) rectangle ++(6,12) (7.25, 1) rectangle ++(3.5,9);
+		
+		% Cables	
+		%% Left	
+		\draw[line width=1.5pt] (6,2) -- +(-2,0);
+		\draw[line width=1.5pt] (6,9) -- +(-2,0);	
+		%	
+		\foreach \i in {0,2,4,6}
+		{	
+			\draw[line width=1.5pt] (\X,\Y-\i*\dY) ..controls (\X+\dX, \Y-\i*\dY) and (\X+\dX,\Y-\dY-\i*\dY).. (\X,\Y-\dY-\i*\dY);
+			
+			\draw[line width=1.5pt] (\XX,\Y-\i*\dY-\dY) ..controls (\XX-\dX, \Y-\i*\dY-\dY) and (\XX-\dX,\Y-\i*\dY-2*\dY).. 
+								(\XX,\Y-\i*\dY-2*\dY);
+								
+			\draw[line width=1.5pt] (\XX,\Y-\i*\dY) -- (\X,\Y-\i*\dY);
+			
+			\draw[line width=1.5pt] (\XX,\Y-\i*\dY-2*\dY) -- (\X,\Y-\i*\dY-2*\dY);
+			
+			\draw[line width=1.5pt] (\X,\Y-\i*\dY-2*\dY) ..controls (\X+\dX, \Y-\i*\dY-2*\dY) and (\X+\dX,\Y-\dY-\i*\dY-2*\dY).. (\X,\Y-\dY-\i*\dY-2*\dY);
+
+		} 				
+		%% Right		
+		\draw[line width=1.5pt] (12,2) -- +(2,0);
+		\draw[line width=1.5pt] (12,9) -- +(2,0);	
+		%
+		\foreach \i in {0,2,4,6,8,10,12}
+		{	
+			\draw[line width=1.5pt] (\x,\y-\i*\dy) ..controls (\x-\dx, \y-\i*\dy) and (\x-\dx,\y-\dy-\i*\dy).. (\x,\y-\dy-\i*\dy);
+			
+			\draw[line width=1.5pt] (\xx,\y-\i*\dy-\dy) ..controls (\xx+\dx, \y-\i*\dy-\dy) and (\xx+\dx,\y-\i*\dy-2*\dy).. 
+								(\xx,\y-\i*\dy-2*\dy);
+								
+			\draw[line width=1.5pt] (\xx,\y-\i*\dy) -- (\x,\y-\i*\dy);
+			
+			\draw[line width=1.5pt] (\x,\y-\i*\dy-2*\dy) ..controls (\x-\dx, \y-\i*\dy-2*\dy) and (\x-\dx,\y-\dy-\i*\dy-2*\dy).. (\x,\y-\dy-\i*\dy-2*\dy);
+			
+			\draw[line width=1.5pt] (\xx,\y-\i*\dy-2*\dy) -- (\x,\y-\i*\dy-2*\dy);
+
+		} 	
+		
+		% Magnetic Flux
+		\draw[line width=0.8, rounded corners] (6.6,0.3) rectangle (11.4, 10.8);
+		\draw[arrow inside, line width=0.8] (7,10.8) -- (11,10.8);
+		\draw[arrow inside, line width=0.8] (11,0.3) -- (7,0.3);
+		
+		% Current Intensities
+		%% Left
+		\draw[line width=1, orange, -latex] (4.2,9.3) -- (5.8,9.3) node[above, pos=0.5, black] {\small$I_1$};
+		\draw[line width=1, orange, latex-] (4.2,1.7) -- (5.8,1.7) node[below, pos=0.5, black] {\small$I_1$};
+		%% Right
+		\draw[line width=1, orange, -latex] (12.2,9.3) -- (13.8,9.3) node[above, pos=0.5, black] {\small$I_2$};
+		\draw[line width=1, orange, latex-] (12.2,1.7) -- (13.8,1.7) node[below, pos=0.5, black] {\small$I_2$};
+		
+		% Node
+		\draw (7.5,10.8) -- (6.4,12.5) -- (6.2, 12.5) node[left, pos=0.9] {\small$\Phi_B$}; 
+	\end{circuitikz}
+
+\end{document}
