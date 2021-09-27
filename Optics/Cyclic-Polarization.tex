@@ -1,0 +1,70 @@
+\documentclass[border=3pt]{standalone}
+
+% Drawing
+\usepackage{tikz}
+\usetikzlibrary{3d} % to specify 3d coordinates. See more in tikz documentation: https://www.bu.edu/math/files/2013/08/tikzpgfmanual.pdf
+
+% Tikz Library
+\usetikzlibrary{shapes.multipart, arrows.meta}
+\usetikzlibrary{}
+
+% Styles
+\tikzset{>=latex}
+\tikzset{axis/.style={black, thick,->}}
+\tikzset{vector/.style={>=stealth,->}}
+\tikzset{every text node part/.style={align=center}}
+
+% Newcommand
+%% Rectangle in 3d
+\newcommand{\rect}[2]{%
+	\begin{scope}[canvas is xz plane at y=1.2]
+		\draw[thick, fill=black!40] (#1,-1.2) rectangle (#1+0.2,1.2);
+	\end{scope}
+	%
+	\begin{scope}[canvas is xy plane at z=1.2]
+		\draw[thick, fill=black!25](#1,-1.2) rectangle (#1+0.2,1.2);
+	\end{scope}
+	%
+	\begin{scope}[canvas is yz plane at x=#1]
+		\draw[thick, fill=black!10] (-1.2,-1.2) rectangle (1.2,1.2);
+		\draw[thick, fill=black!10, dashed] (0,0) ellipse (0.7cm and 0.7cm);
+	\end{scope}
+}
+% Draw Line from (0,0) to (r,\theta) in polar coordinates
+\newcommand{\cdraw}[2]{\draw[very thick, -stealth, red] (0,0) -- ({#1*cos(#2)}, {#1*sin(#2)});}
+
+% Notation
+\usepackage{amsmath}
+
+\begin{document}
+
+\begin{tikzpicture}[x={(0.8cm, 0.4cm)}, y={(0.9cm, -0.3cm)}, z={(0cm,1cm)}, line cap=round, line join=round]
+	
+	% Main Axes
+%	\draw[->] (0,0,0) -- (8,0,0) node[right] {$x$};
+%	\draw[->] (0,0,0) -- (0,2,0) node[below left] {$y$};
+%	\draw[->] (0,0,0) -- (0,0,2) node[above] {$z$};
+	
+	% Propagation Direction Vector	
+	\draw[very thick, ->] (1,0,0) -- (8.3,0,0) node[right, black] {\small{Propagation}\\[-0.5mm]\small{Direction}};
+	
+	% Rectangle
+	\rect{6}
+	
+	% Correction so as the Figure to Seem 3d
+	\draw[very thick] (1,0,0) -- (6,0,0);
+	
+	% Red Line
+	\draw[very thick, red, variable=\t, domain=1:6, samples=300] plot (\t, {0.7*sin(deg(\t*4+90))}, {0.7*cos(deg(\t*4+90))});
+	
+	% Vectors from Axis to the Line
+	\foreach \i [evaluate={\k = \i*4; \ii = \i;}] in {1,1.05,...,6}
+	{
+		\draw[-{Latex[length=0.8mm]}] (\ii,0,0) -- +(0, {0.7*sin(deg(\k+90))}, {0.7*cos(deg(\k+90))});
+	}
+	
+	% Nodes
+	\node at (5,-2.5) {\small Circularly Polarized\\[-0.5mm]\small Light};
+\end{tikzpicture}
+
+\end{document}
