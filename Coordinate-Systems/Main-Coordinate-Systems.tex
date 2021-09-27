@@ -12,12 +12,12 @@
 % Cartesian Coordinates	
 \tdplotsetmaincoords{60}{110}
 \begin{tikzpicture}[scale=3, tdplot_main_coords]
- 	\coordinate (O) at (0,0,0);
-	\draw[thick,->] (0,0,0) -- (1,0,0) node[anchor=north east]{$x$};
-	\draw[thick,->] (0,0,0) -- (0,1,0) node[anchor=north west]{$y$};
-	\draw[thick,->] (0,0,0) -- (0,0,1) node[anchor=south]{$z$};
-	\tdplotsetcoord{P}{1}{30}{60}
-	\draw plot [mark=*, mark size=0.2] (P) node [right] {\scriptsize$(x,y,z)$}; 
+    \coordinate (O) at (0,0,0);
+    \draw[thick,->] (0,0,0) -- (1,0,0) node[anchor=north east]{$x$};
+    \draw[thick,->] (0,0,0) -- (0,1,0) node[anchor=north west]{$y$};
+    \draw[thick,->] (0,0,0) -- (0,0,1) node[anchor=south]{$z$};
+    \tdplotsetcoord{P}{1}{30}{60}
+    \draw plot [mark=*, mark size=0.2] (P) node [right] {\scriptsize$(x,y,z)$}; 
     \draw[dashed] (O) -- (P);
     \draw[dashed, color=black] (O) -- (Pxy);
     \draw[dashed, color=black] (P) -- (Pxy);
@@ -29,12 +29,12 @@
 % Polar Coordinates
 \tdplotsetmaincoords{60}{110}
 \begin{tikzpicture}[scale=3, tdplot_main_coords]
- 	\coordinate (O) at (0,0,0);
-	\draw[thick,->] (0,0,0) -- (1,0,0) node[anchor=north east]{$x$};
-	\draw[thick,->] (0,0,0) -- (0,1,0) node[anchor=north west]{$y$};
-	\draw[thick,->] (0,0,0) -- (0,0,1) node[anchor=south]{$z$};
-	\tdplotsetcoord{P}{1}{30}{60}
-	\draw plot [mark=*, mark size=0.2] (P) node [right] {\scriptsize$(\rho,\phi,z)$};
+    \coordinate (O) at (0,0,0);
+    \draw[thick,->] (0,0,0) -- (1,0,0) node[anchor=north east]{$x$};
+    \draw[thick,->] (0,0,0) -- (0,1,0) node[anchor=north west]{$y$};
+    \draw[thick,->] (0,0,0) -- (0,0,1) node[anchor=south]{$z$};
+    \tdplotsetcoord{P}{1}{30}{60}
+    \draw plot [mark=*, mark size=0.2] (P) node [right] {\scriptsize$(\rho,\phi,z)$};
     \draw[dashed] (O) -- (P);
     \draw[->, thick, color=black] (O) -- (Pxy) node [below right] {$\rho$};
     \draw[dashed, color=black] (P) -- (Pxy);
@@ -45,12 +45,12 @@
 % Spherical Coordinates
 \tdplotsetmaincoords{60}{110}
 \begin{tikzpicture}[scale=3, tdplot_main_coords]
- 	\coordinate (O) at (0,0,0);
-	\draw[thick,->] (0,0,0) -- (1,0,0) node[anchor=north east]{$x$};
-	\draw[thick,->] (0,0,0) -- (0,1,0) node[anchor=north west]{$y$};
-	\draw[thick,->] (0,0,0) -- (0,0,1) node[anchor=south]{$z$};
-	\tdplotsetcoord{P}{1}{30}{60}
-	\draw plot [mark=*, mark size=0.2] (P) node [right] {\scriptsize$(r,\theta,\phi)$};
+    \coordinate (O) at (0,0,0);
+    \draw[thick,->] (0,0,0) -- (1,0,0) node[anchor=north east]{$x$};
+    \draw[thick,->] (0,0,0) -- (0,1,0) node[anchor=north west]{$y$};
+    \draw[thick,->] (0,0,0) -- (0,0,1) node[anchor=south]{$z$};
+    \tdplotsetcoord{P}{1}{30}{60}
+    \draw plot [mark=*, mark size=0.2] (P) node [right] {\scriptsize$(r,\theta,\phi)$};
     \draw[->, thick] (O) -- (P) node [midway, below right] {$r$};
     \draw[dashed, color=black] (O) -- (Pxy);
     \draw[dashed, color=black] (P) -- (Pxy);
