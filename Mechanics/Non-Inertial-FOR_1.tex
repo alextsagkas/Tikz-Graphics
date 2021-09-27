@@ -1,0 +1,118 @@
+\documentclass[border=3pt]{standalone}
+
+%Drawing
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+
+%Notation
+\usepackage{physics}
+\usepackage{bm}
+
+%Tikz Library
+\usetikzlibrary{calc, 3d}
+
+%Newcommand
+
+%%Right Angle
+\def\rightangle[size=#1](#2,#3,#4){\draw[thick] ($(#3)!#1!(#2)$) -- ($($(#3)!#1!(#2)$)!#1!90:(#2)$) -- ($(#3)!#1!(#4)$)}
+
+\begin{document}
+	%Macros
+	\pgfmathsetmacro{\rvec}{2.5}
+	\pgfmathsetmacro{\phivec}{80}
+	
+	%Axis Angles
+	\tdplotsetmaincoords{70}{130}
+	
+	%Layers
+	\pgfdeclarelayer{background}
+	\pgfdeclarelayer{foreground}
+
+	\pgfsetlayers{background, main, foreground}
+	
+	\begin{tikzpicture}[scale=0.7, tdplot_main_coords]
+		\coordinate (O) at (0,0,0);
+		
+%		%Axis
+%		\draw[thick, ->] (O) -- (10,0,0) node[pos=1.1] {$x$};
+%		\draw[thick, ->] (O) -- (0,10,0) node[pos=1.1] {$y$};
+%		\draw[thick, ->] (O) -- (0,0,10) node[pos=1.1] {$z$};
+		
+		%Coordinates
+		\coordinate (A) at (8,2,0);
+		\coordinate (A') at (8,2,12);
+		\coordinate (C) at ($(A)!0.7!(A')$);
+		\tdplotsetcoord{d}{\rvec}{90}{\phivec}
+		\coordinate (D) at ($(d)+(C)$);
+		\tdplotsetcoord{d'}{3}{90}{90+\phivec}
+		\coordinate (D') at ($(D)+(d')$);
+		%
+		\coordinate (a) at (0,8,0);
+		\coordinate (a') at (0,8,12);
+		\coordinate (c) at ($(a)!0.7!(a')$);
+		\tdplotsetcoord{dd}{\rvec}{90}{0}
+		\coordinate (d) at ($(dd)+(c)$);
+		\tdplotsetcoord{ddn}{1}{90}{90}
+		\coordinate (dn) at ($(ddn)+(d)$);
+		\tdplotsetcoord{dd'}{\rvec}{90}{90}
+		\coordinate (d') at ($(dd')+(c)$);
+		\tdplotsetcoord{ddn'}{1}{90}{180}
+		\coordinate (dn') at ($(ddn')+(d')$);
+%		%%Nodes
+%		\node at (A) {A};
+%		\node at (A') {A'};
+%		\node at (C) {C};
+%		\node at (D) {D};
+%		\node at (D') {D'};
+%		\node at (a) {a};
+%		\node at (a') {a'};
+%		\node at (c) {c};
+%		\node at (d) {d};
+%		\node at (dn) {dn};
+%		\node at (d') {d'};
+%		\node at (dn') {dn'};	
+		
+		%Lines
+		\begin{pgfonlayer}{main}
+			\draw[thick] (A) -- (A');
+			%
+			\draw[thick] (a) -- (a');
+			%%
+			\draw[blue, dashed] (A) -- ($(A)!0.15!(a')$);
+			\draw[blue] ($(A)!0.15!(a')$) -- (a');
+			\draw[blue, dashed] (A) -- ($(A)!0.15!(a)$);
+			\draw[blue] ($(A)!0.15!(a)$) -- (a);
+		\end{pgfonlayer}
+		
+		%Vectors
+		\begin{pgfonlayer}{foreground}
+			\draw[very thick, -latex] (C) -- +(0,0,3) node[pos=0.5, left] {$\vb*{\omega}$};
+			\draw[-latex] (A) -- (D) node[midway, right] {$\vb{a}$};
+			\draw (C) -- (D) node [midway, above] {$\rho$};
+			\draw[-latex] (D) -- (D') node[pos=1.1, above] {$\vb*{\omega}\cross\vb{a}$};
+			%
+			\draw[very thick, -latex] (c) -- +(0,0,3) node[pos=0.5, left] {$z\,\vu{z}$};
+			\draw (c) -- (d) node[pos=0.4, above left] {$x\,\vu{x}$};
+			\draw[-latex] (d) -- (dn) node [pos=0.3, below] {$\dd\vu{x}$};
+			\draw[-latex] (c) -- (d') node[pos=0.4, above right] {$y\,\vu{y}$};
+			\draw[-latex] (d') -- (dn') node [pos=0.6, below] {$\dd\vu{y}$};
+		\end{pgfonlayer}
+				
+		%Circles 
+		\node[circle, fill=black, inner sep=0.8pt] at (C) {};
+		\node[circle, fill=black, inner sep=0.8pt] at (c) {};
+		%
+		\tdplotdrawarc[very thick, red]{(C)}{\rvec}{0}{360}{}{}
+		%
+		\tdplotdrawarc[very thick, red]{(c)}{\rvec}{0}{360}{}{}
+		%
+		\tdplotsetthetaplanecoords{\phivec}
+		\tdplotdrawarc[-stealth, tdplot_rotated_coords]{(A)}{2}{0}{16.7}{}{}
+		\node at ($(C)!0.16!(D)-(0,0,6)$) {$\theta$};
+		
+		%Nodes
+		\node[align=center] at (11,0,11) {Inertial Frame\\of Reference};
+		\node[align=center] at (0,3.5,11) {Rotating Frame\\of Reference};
+	\end{tikzpicture}
+	
+\end{document}

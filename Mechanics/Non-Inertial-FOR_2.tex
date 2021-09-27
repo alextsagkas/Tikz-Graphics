@@ -1,0 +1,99 @@
+\documentclass[border=3pt]{standalone}
+
+%Drawing
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+
+%Notation
+\usepackage{physics}
+\usepackage{bm}
+
+%Tikz Library
+\usetikzlibrary{calc, 3d}
+
+\begin{document}
+	%Macros
+	\pgfmathsetmacro{\rvec}{12}
+	\pgfmathsetmacro{\Rvec}{3}
+	\pgfmathsetmacro{\phivec}{-40}
+	\pgfmathsetmacro{\thetavec}{20}
+	
+	%Axis Angles
+	\tdplotsetmaincoords{70}{130}
+	
+	%Layers
+	\pgfdeclarelayer{background}
+	\pgfdeclarelayer{foreground}
+
+	\pgfsetlayers{background, main, foreground}
+	
+	\begin{tikzpicture}[scale=0.7, tdplot_main_coords]
+		\coordinate (O) at (0,0,0);
+		
+%		%Axis
+%		\draw[thick, ->] (O) -- (15,0,0) node[pos=1.1] {$x$};
+%		\draw[thick, ->] (O) -- (0,15,0) node[pos=1.1] {$y$};
+%		\draw[thick, ->] (O) -- (0,0,15) node[pos=1.1] {$z$};
+		
+		%Coordinates
+		\coordinate (O) at (0,0,0);
+		\tdplotsetcoord{A}{\rvec}{\thetavec}{\phivec}
+		\coordinate (B) at ($(O)!0.7!(A)$);
+		\coordinate (O') at (15,2,0);
+%		%%Nodes
+%		\node at (O) {O};
+%		\node at (O') {O'};		
+%		\node at (A) {A};
+%		\node at (B) {B};
+		
+		%Lines
+		\begin{pgfonlayer}{main}
+			\draw (O) -- (A);
+			\tdplotsetrotatedcoords{\phivec}{\thetavec}{0}
+			\draw[tdplot_rotated_coords] (B) -- ++({\Rvec*sin(40)},{\Rvec*cos(40)},0) node[pos=0.5,right] {$\rho$};
+			\draw[tdplot_rotated_coords, dashed] ($({\Rvec*sin(90)},{\Rvec*cos(90)},0)+(B)$) -- ($({\Rvec*sin(270)},{\Rvec*cos(270)},0)+(B)$);
+			%
+			\draw[-latex, thick] (O') -- (O);
+			\draw[tdplot_rotated_coords, thick, -latex] (O) -- ($({\Rvec*sin(40)},{\Rvec*cos(40)},0)+(B)$) node[pos=0.55,left] {$\vb{a}$};
+			\draw[tdplot_rotated_coords, thick, -latex] (O') -- ($({\Rvec*sin(40)},{\Rvec*cos(40)},0)+(B)$) node[pos=0.6,left] {$\vb{a}'$};
+		\end{pgfonlayer}
+		\begin{pgfonlayer}{foreground}
+			\tdplotsetrotatedcoords{\phivec}{\thetavec}{0}
+			\draw[-latex, very thick] (B) -- ($(B)!0.6!(A)$) node[pos=0.5,right] {$\omega$};
+			\draw[-latex, thick, tdplot_rotated_coords] ($({\Rvec*sin(40)},{\Rvec*cos(40)},0)+(B)$) -- ++({\Rvec*sin(310)},{\Rvec*cos(310)},0) node[pos=0.5,below] {$\vb*{\omega}\cross\vb{a}$};
+		\end{pgfonlayer}
+
+		
+		%Nodes
+		\node at (8,3,0) {$\vb{a}_o$};
+		\node[shift={(0,2.5,1)}, align=center] at (O) {Non Inertial Frame\\of Reference};
+		\node[shift={(0,0,-0.5)}] at (O) {$O$};
+		\node[shift={(0,0,-1.5)}, align=center] at (O') {Inertial Frame\\of Reference};
+		\node[shift={(0.4,-0.2,0)}] at (O') {$O'$};
+		\node at (1.8,0,2.8) {$\theta$};
+		
+		%Arcs
+		\begin{pgfonlayer}{main}
+			\tdplotsetrotatedcoords{\phivec}{\thetavec}{0}
+			\tdplotdrawarc[very thick, red, tdplot_rotated_coords]{(B)}{\Rvec}{0}{360}{}{}
+		\end{pgfonlayer}
+		
+		%Points
+		\begin{pgfonlayer}{foreground}
+			\node[circle, fill=black, inner sep=0.7pt] at (B) {};
+			\node[circle, fill=black, inner sep=0.7pt] at (O) {};
+			\node[circle, fill=black, inner sep=0.7pt] at (O') {};
+			\tdplotsetrotatedcoords{\phivec}{\thetavec}{0}
+			\draw[tdplot_rotated_coords, fill=black] ($({\Rvec*sin(40)},{\Rvec*cos(40)},0)+(B)$) circle (1.2pt);
+		\end{pgfonlayer}		
+		
+		
+%		%Angles
+		\begin{pgfonlayer}{main}
+			\tdplotsetthetaplanecoords{-20}
+			\tdplotdrawarc[tdplot_rotated_coords]{(O)}{2}{21.5}{35}{}{}
+		\end{pgfonlayer}
+		
+	\end{tikzpicture}
+	
+\end{document}
