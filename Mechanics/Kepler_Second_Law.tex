@@ -1,0 +1,83 @@
+\documentclass[border=2pt]{standalone}
+
+% Drawing
+\usepackage{tikz}
+
+% Notation
+\usepackage{physics, bm}
+
+% Tikz Library
+\usetikzlibrary{angles, quotes}
+
+% Newcommand
+%% Polar Coordinates 
+\newcommand{\pcord}[3]{\coordinate (#3) at ({#1*cos(#2)},{#1*sin(#2)});}
+
+\begin{document}
+	
+	% Macros
+	\def\r{2.22}
+	\def\rr{3.22}
+	
+	\begin{tikzpicture}[line cap = round]
+		% Grid
+%		\draw[thin, dotted] (0,0) grid (8,8);
+%		\foreach \i in {1,...,8}
+%		{
+%			\node at (\i,-2ex) {\i};	
+%		}
+%		\foreach \i in {1,...,8}
+%		{
+%			\node at (-2ex,\i) {\i};	
+%		}
+%		\node at (-2ex,-2ex) {0};
+		
+		% Coordinates
+		\coordinate (O) at (0,0);
+		\pcord{\rr}{12.5}{A}
+		\pcord{\r}{12.5}{B}
+		\pcord{\rr}{-14.5}{C}
+		\pcord{\r}{-14.5}{D}
+		\pcord{1.54}{-14.5}{E}
+		\coordinate (F) at (\r,0);
+		% Nodes
+%		\node at (A) {A};
+%		\node at (B) {B};
+%		\node at (C) {C};
+%		\node at (D) {D};		
+%		\node at (E) {E};
+%		\node at (F) {F};	
+		
+		% Orbit
+		\draw[shift={(0,-1)}, thick, >->, blue] (0,0) to [bend right = 20] (5,4) node [shift={(-0.2,-1.4)}] {Orbit};
+		
+		% Nodes
+		\node at (2.6,1) {$\dd{r}$};
+		\node at (1.8,0.2) {$r$};
+		\node at (2.65,-0.3) {$r\dd{\phi}$};
+		\node (a) at (0.6,1) {$\dd\phi$};
+		
+		% Paths
+		\path[fill=blue, opacity=0.6] (F) to[bend right = 5] (B) -- (A) to[bend left = 6] cycle;
+		\path[fill=blue, opacity=0.6] (F) to[bend left = 5] (D) -- (E) to[bend right = 4] cycle;
+		
+		% Circles
+		\draw[domain=-40:40, dashed, variable=\t, samples=100] plot ({\r*cos(\t)},{\r*sin(\t)});
+		\draw[domain=-40:40, dashed, variable=\t, samples=100] plot ({\rr*cos(\t)},{\rr*sin(\t)});
+		
+		% Lines
+		\draw[thick] (O) -- (\rr,0);
+		\draw[thick] (O) -- (A);
+		\draw[thick] (O) -- (B);
+		\draw[thick] (O) -- (C);
+		\draw[->] (a) to[bend right=20] (0.8,-0.14);
+		
+		% Point
+		\draw[fill=black] (0,0) circle [radius=1pt] node [left] {$\mathrm{O}$};
+		
+		% Angles
+		\pic[draw, thick, angle radius = 1cm] {angle = E--O--F};
+		\pic[draw, thick, angle radius = 1.25cm] {angle = F--O--B};
+	\end{tikzpicture}
+	
+\end{document}

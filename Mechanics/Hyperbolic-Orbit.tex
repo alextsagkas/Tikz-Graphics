@@ -1,0 +1,75 @@
+\documentclass[border=2pt]{standalone}
+
+% Drawing
+\usepackage{tikz}
+
+% Tikz Library
+\usetikzlibrary{decorations.markings, calc}
+
+% Notation
+\usepackage{physics}
+
+% Newcommand
+%% Midline Label
+\newcommand{\midlinelabel}[3]{
+   \node[inner sep = 1.3pt] (midlabel) at ($ (#1)!.5!(#2) $) {#3};
+   \draw[thick, line cap = round] (#1) --  (midlabel);
+   \draw[-latex, thick, line cap = round] (midlabel) -- (#2);
+}
+
+% Styles
+%% Arrows
+\tikzset{arrow/.style = {postaction=decorate, decoration={markings,mark=between positions 0.1 and 0.9 step 3cm with \arrow{stealth}}}}
+
+\begin{document}
+	
+	% Macros
+	\def\a{5}
+	\def\b{3}
+	\def\Theta{atan(\b/\a)}
+	\def\r{1}
+	\def\sm{0.17}
+	
+	\begin{tikzpicture}
+			%Grid
+%			\draw[thin, dotted] (-1,-1) grid (10,10);
+%			\foreach \i in {1,...,8}
+%			{
+%				\node at (\i,-2ex) {\i};	
+%			}
+%			\foreach \i in {1,...,8}
+%			{
+%				\node at (-2ex,\i) {\i};	
+%			}
+%			\node at (-2ex,-2ex) {0};
+			
+			% Rotate the Hyperbola
+			\begin{scope}[rotate=-\Theta]
+				% Dashed Axis
+				\draw[domain=-2:8, dashed] plot (\x,{\b/\a*\x});
+				\draw[domain=1.5:-4, dashed] plot (\x,{-\b/\a*\x});	
+				% Plot
+				\draw[domain=40:-22, samples=100, thick, blue, -stealth, arrow] plot ({\sm*\x},{\sm*\b*sqrt(1+(\x)^(2)/(\a)^2)});
+				% r_o
+				\midlinelabel{$(0,0)+(90:-1.17)$}{0,\sm*\b}{$r_o$}
+			\end{scope}
+			
+			% Angles
+			\draw[-latex, thick] (-\r,0) arc (180:(90+\Theta):\r) node[pos=0.6, left] {$\theta$};
+			
+			% Particle
+			\draw[-latex, thick, red] (10,0) -- +(-1.2,0) node [above, shift={(0.1,0.1)}] {$\vb{v}$};
+			\draw[fill=black] (10,0) circle [radius=2pt] node [above, shift={(0,0.2)}] {$m$};
+			
+			% Node
+			\node[blue] at (-0.8,3) {Orbit};
+			
+			% Vectors
+			\midlinelabel{-0.6,-1}{10,0}{$\vb{r}_\infty$}
+			\midlinelabel{-0.6,-1}{-0.6,0}{$b$}
+			
+			% Point 
+			\draw[fill=black] (-0.6,-1) circle [radius=1.5pt] node [below, shift={(0,-0.1)}] {$\mathrm{O}$};
+	\end{tikzpicture}
+	
+\end{document}
