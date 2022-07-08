@@ -1,0 +1,50 @@
+\documentclass[border=3pt]{standalone}
+
+% Circuits
+\usepackage[european,s traightvoltages, RPvoltages, americanresistor, americaninductors]{circuitikz}
+\tikzset{every picture/.style={line width=0.2mm}}
+
+% Notation
+\usepackage{amsmath}
+
+% Tikz Library
+\usetikzlibrary{calc}
+
+% Bipoles Specifications
+\ctikzset{bipoles/thickness=1.2, label distance=1mm, voltage shift = 1}
+
+% Inductors
+\ctikzset{inductors/coils=4, inductors/width=1.2}
+
+% Transformers
+\ctikzset{quadpoles/transformer core/height=1.8}
+
+\begin{document}
+	\begin{circuitikz}
+%		%Grid
+%		\def\length{6}
+%		\draw[thin, dotted] (-\length,-\length) grid (\length,\length);
+%		\foreach \i in {1,...,\length}
+%		{
+%			\node at (\i,-2ex) {\i};
+%			\node at (-\i,-2ex) {-\i};	
+%		}
+%		\foreach \i in {1,...,\length}
+%		{
+%			\node at (-2ex,\i) {\i};	
+%			\node at (-2ex,-\i) {-\i};	
+%		}
+%		\node at (-2ex,-2ex) {0};
+		
+		%Circuit
+		\def\x{4}
+		\def\y{3}
+		\draw 
+		(0,0) node[transformer core] (T) {}
+		(T.B1) to[full diode, l=$D_1$] ++(\x,0) 
+				to[R, l=$R$] ($(T.B2)+(\x,0)$) -- ++(-0.8*\x,0) 
+				node[ground, pos=0.5] (ground) {} |- (T-L2.midtap);
+				
+		\draw[fill=black] (ground.north) circle (1.5pt);
+	\end{circuitikz}
+\end{document}

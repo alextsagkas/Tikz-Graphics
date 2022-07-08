@@ -1,0 +1,81 @@
+\documentclass[border=3pt]{standalone}
+
+% Circuits
+\usepackage[european,s traightvoltages, RPvoltages, americanresistor, americaninductors]{circuitikz}
+\tikzset{every picture/.style={line width=0.2mm}}
+
+% Tikz Library
+\usetikzlibrary{calc}
+
+% Notation
+\usepackage{amsmath}
+
+% Bipoles Specifications
+\ctikzset{bipoles/thickness=1.2, label distance=1mm, voltage shift = 1}
+
+% Arrows Above Compenents
+% Source: https://tex.stackexchange.com/questions/574576/circuitikz-straight-voltage-arrows-with-fixed-length
+\newcommand{\fixedvlen}[3][0.4cm]{% [semilength]{node}{label}
+    % get the center of the standard arrow
+    \coordinate (#2-Vcenter) at ($(#2-Vfrom)!0.5!(#2-Vto)$);
+    % draw an arrow of a fixed size around that center and on the same line
+    \draw[-{Triangle[round,open]}] ($(#2-Vcenter)!#1!(#2-Vfrom)$) -- ($(#2-Vcenter)!#1!(#2-Vto)$);
+    % position the label as it where if standard voltages were used
+    \node[ anchor=\ctikzgetanchor{#2}{Vlab}] at (#2-Vlab) {#3};
+}
+\newcommand{\fixedvlendashed}[3][0.75cm]{% [semilength]{node}{label}
+    % get the center of the standard arrow
+    \coordinate (#2-Vcenter) at ($(#2-Vfrom)!0.5!(#2-Vto)$);
+    % draw an arrow of a fixed size around that center and on the same line
+    \draw[dashed,-{Triangle[round,open]}] ($(#2-Vcenter)!#1!(#2-Vfrom)$) -- ($(#2-Vcenter)!#1!(#2-Vto)$);
+    % position the label as it where if standard voltages were used
+    \node[ anchor=\ctikzgetanchor{#2}{Vlab}] at (#2-Vlab) {#3};
+}
+
+\begin{document}
+
+\begin{circuitikz}
+%		%Grid
+%		\draw[thin, dotted] (0,0) grid (8,8);
+%		\foreach \i in {1,...,8}
+%		{
+%			\node at (\i,-2ex) {\i};	
+%		}
+%		\foreach \i in {1,...,8}
+%		{
+%			\node at (-2ex,\i) {\i};	
+%		}
+%		\node at (-2ex,-2ex) {0};
+			
+		%Coordinates
+		\coordinate (A) at (0,8);
+		\coordinate (B) at (0,4);
+		\coordinate (C) at (2.5,4);
+		\coordinate (D) at (7,4);
+		\coordinate (E) at (2.5,0);
+		\coordinate (Z) at (0,0);
+		\coordinate (Earth) at (0,-1);
+		
+		%Circuit
+		\draw (A) to[resistor, l_=$R_1$, i>=$I_{R_1}$, v^<, name=r1] (B) to[short, i>=$$] (C)
+				 to[resistor, l^=$R_4$, a_= {$V_{R_4}= 0 = I_{R_4}$}, name=r4, *-*] (D);
+		\draw (B) to[resistor, l_=$R_2$, i>=$I_{R_2}$, v^<, name=r2, *-*] (Z) to[short, i>=$$] (Earth) node[tlground]{};
+		\draw (C) to[resistor, l_=$R_3$, i>=$I_{R_3}$, v^<, name=r3, *-*] (E) to[short, i>=$$] (Z);
+		
+		%Nodes
+		\node[shift={(0.6,0)}] at (A) {$V_{CC}$};
+		\node[left] at (A) {A};
+		\node[left] at (B) {B};
+		\node[above] at (C) {C};
+		\node[above] at (D) {D};
+		\node[right] at (E) {E};
+		\node[left] at (Z) {F};
+		
+		% Voltages
+		\fixedvlen[0.5cm]{r1}{$V_{R_1}$}		
+		\fixedvlen[0.5cm]{r2}{$V_{R_2}$}	
+		\fixedvlen[0.5cm]{r3}{$V_{R_3}$}
+		
+\end{circuitikz}
+
+\end{document}

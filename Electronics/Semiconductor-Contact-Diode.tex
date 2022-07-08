@@ -1,0 +1,46 @@
+\documentclass[border=3pt]{standalone}
+
+% Circuits
+\usepackage[european,s traightvoltages, RPvoltages, americanresistor, americaninductors]{circuitikz}
+\tikzset{every picture/.style={line width=0.2mm}}
+
+% Notation
+\usepackage{amsmath}
+
+% Bipoles Specifications
+\ctikzset{bipoles/thickness=1.2, label distance=1mm, voltage shift = 1}
+
+\begin{document}
+	
+\begin{circuitikz}
+%%Grid
+%\def\length{4}
+%\draw[thin, dotted] (-\length,-\length) grid (\length,\length);
+%\foreach \i in {1,...,\length}
+%{
+%	\node at (\i,-2ex) {\i};
+%	\node at (-\i,-2ex) {-\i};	
+%}
+%\foreach \i in {1,...,\length}
+%{
+%	\node at (-2ex,\i) {\i};	
+%	\node at (-2ex,-\i) {-\i};	
+%}
+%\node at (-2ex,-2ex) {0};
+
+% PN Contact
+\draw[fill=black!15, draw=black, line width = 0.2mm] (-3.5,0) rectangle (-2.5,1);
+\draw[line width = 0.2mm] (-2.5,0) rectangle (-1.5,1);
+\node at (-3,0.5) {p};
+\node at (-2,0.5) {n};
+\draw (-3.5,0.5) -- (-4,0.5) node[left] {A};
+\draw (-1.5,0.5) -- (-1,0.5) node[right] {K};
+\draw [-{Triangle[round]}] (-3,-0.5) -- (-2,-0.5) node[pos=0.5,below] {$I$};
+
+% Diode
+\draw (1,0.5) node[left] {A} to[full diode] (3,0.5) node[right] {K};
+\draw [-{Triangle[round]}] (1.5,-0.5) -- (2.5,-0.5) node[pos=0.5,below] {$I$};		
+
+\end{circuitikz}
+	
+\end{document}

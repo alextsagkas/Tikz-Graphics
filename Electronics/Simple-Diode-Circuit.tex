@@ -1,0 +1,69 @@
+\documentclass[border=3pt]{standalone}
+
+% Circuits
+\usepackage[european,s traightvoltages, RPvoltages, americanresistor, americaninductors]{circuitikz}
+\tikzset{every picture/.style={line width=0.2mm}}
+
+% Notation
+\usepackage{amsmath}
+
+% Tikz Library
+\usetikzlibrary{calc}
+
+% Bipoles Specifications
+\ctikzset{bipoles/thickness=1.2, label distance=1mm, voltage shift = 1}
+
+% Arrows Above Compenents
+% Source: https://tex.stackexchange.com/questions/574576/circuitikz-straight-voltage-arrows-with-fixed-length
+\newcommand{\fixedvlen}[3][0.4cm]{% [semilength]{node}{label}
+    % get the center of the standard arrow
+    \coordinate (#2-Vcenter) at ($(#2-Vfrom)!0.5!(#2-Vto)$);
+    % draw an arrow of a fixed size around that center and on the same line
+    \draw[-{Triangle[round,open]}] ($(#2-Vcenter)!#1!(#2-Vfrom)$) -- ($(#2-Vcenter)!#1!(#2-Vto)$);
+    % position the label as it where if standard voltages were used
+    \node[ anchor=\ctikzgetanchor{#2}{Vlab}] at (#2-Vlab) {#3};
+}
+\newcommand{\fixedvlendashed}[3][0.75cm]{% [semilength]{node}{label}
+    % get the center of the standard arrow
+    \coordinate (#2-Vcenter) at ($(#2-Vfrom)!0.5!(#2-Vto)$);
+    % draw an arrow of a fixed size around that center and on the same line
+    \draw[dashed,-{Triangle[round,open]}] ($(#2-Vcenter)!#1!(#2-Vfrom)$) -- ($(#2-Vcenter)!#1!(#2-Vto)$);
+    % position the label as it where if standard voltages were used
+    \node[ anchor=\ctikzgetanchor{#2}{Vlab}] at (#2-Vlab) {#3};
+}
+
+\begin{document}
+	
+	\begin{circuitikz}
+%		%Grid
+%		\def\length{6}
+%		\draw[thin, dotted] (-\length,-\length) grid (\length,\length);
+%		\foreach \i in {1,...,\length}
+%		{
+%			\node at (\i,-2ex) {\i};
+%			\node at (-\i,-2ex) {-\i};	
+%		}
+%		\foreach \i in {1,...,\length}
+%		{
+%			\node at (-2ex,\i) {\i};	
+%			\node at (-2ex,-\i) {-\i};	
+%		}
+%		\node at (-2ex,-2ex) {0};
+		
+		% Circuit
+		\def\y{4}
+		\def\x{3}
+		\draw (0,0) 
+			to[battery1, v^>, name=v_in] ++(0,\y) -- ++(\x,0) 
+			to[full diode, l_=$D$, v^<, name=v_d, i_>=$I$] ++(0,-\y*0.5) 
+			to[R, l_=$R$, v^<, name=v_r] ++(0,-\y*0.5) -- ++(-\x,0);
+		\draw (1.5,0) to[short,*-] ++(0,-0.1) node[ground] {};
+		
+		% Voltages
+		\fixedvlen[0.4cm]{v_in}{$V_\text{IN}$}
+		\fixedvlen[0.4cm]{v_d}{$V_D$}
+		\fixedvlen[0.4cm]{v_r}{$V_R$}
+			
+	\end{circuitikz}
+	
+\end{document}

@@ -1,0 +1,122 @@
+\documentclass[border=3pt]{standalone}
+
+% Circuits
+\usepackage[european,s traightvoltages, RPvoltages, americanresistor, americaninductors]{circuitikz}
+\tikzset{every picture/.style={line width=0.2mm}}
+
+% Notation
+\usepackage{amsmath}
+
+% Tikz Library
+\usetikzlibrary{calc}
+
+% Bipoles Specifications
+\ctikzset{bipoles/thickness=1.2, label distance=1mm, voltage shift = 1}
+
+% Arrows Above Compenents
+% Source: https://tex.stackexchange.com/questions/574576/circuitikz-straight-voltage-arrows-with-fixed-length
+\newcommand{\fixedvlen}[3][0.4cm]{% [semilength]{node}{label}
+    % get the center of the standard arrow
+    \coordinate (#2-Vcenter) at ($(#2-Vfrom)!0.5!(#2-Vto)$);
+    % draw an arrow of a fixed size around that center and on the same line
+    \draw[-{Triangle[round,open]}] ($(#2-Vcenter)!#1!(#2-Vfrom)$) -- ($(#2-Vcenter)!#1!(#2-Vto)$);
+    % position the label as it where if standard voltages were used
+    \node[ anchor=\ctikzgetanchor{#2}{Vlab}] at (#2-Vlab) {#3};
+}
+\newcommand{\fixedvlendashed}[3][0.75cm]{% [semilength]{node}{label}
+    % get the center of the standard arrow
+    \coordinate (#2-Vcenter) at ($(#2-Vfrom)!0.5!(#2-Vto)$);
+    % draw an arrow of a fixed size around that center and on the same line
+    \draw[dashed,-{Triangle[round,open]}] ($(#2-Vcenter)!#1!(#2-Vfrom)$) -- ($(#2-Vcenter)!#1!(#2-Vto)$);
+    % position the label as it where if standard voltages were used
+    \node[ anchor=\ctikzgetanchor{#2}{Vlab}] at (#2-Vlab) {#3};
+}
+
+% Kink Crossing
+\tikzset{
+    declare function={% in case of CVS which switches the arguments of atan2
+        atan3(\a,\b)=ifthenelse(atan2(0,1)==90, atan2(\a,\b), atan2(\b,\a));
+    },
+    kinky cross radius/.initial=+.15cm,
+    @kinky cross/.initial=+,
+    kinky crosses/.is choice,
+    kinky crosses/left/.style={@kinky cross=-},
+    kinky crosses/right/.style={@kinky cross=+},
+    kinky cross/.style args={(#1)--(#2)}{
+        to path={
+            let \p{@kc@}=($(\tikztotarget)-(\tikztostart)$),
+            \n{@kc@}={atan3(\p{@kc@})+180} in
+            -- ($(intersection of \tikztostart--{\tikztotarget} and #1--#2)!%
+            \pgfkeysvalueof{/tikz/kinky cross radius}!(\tikztostart)$)
+            arc [ radius     =\pgfkeysvalueof{/tikz/kinky cross radius},
+            start angle=\n{@kc@},
+            delta angle=\pgfkeysvalueof{/tikz/@kinky cross}180 ]
+            -- (\tikztotarget)
+        }
+    }
+}
+
+\begin{document}
+	\begin{circuitikz}
+%		%Grid
+%		\def\length{8}
+%		\draw[thin, dotted] (-\length,-\length) grid (\length,\length);
+%		\foreach \i in {1,...,\length}
+%		{
+%			\node at (\i,-2ex) {\i};
+%			\node at (-\i,-2ex) {-\i};	
+%		}
+%		\foreach \i in {1,...,\length}
+%		{
+%			\node at (-2ex,\i) {\i};	
+%			\node at (-2ex,-\i) {-\i};	
+%		}
+%		\node at (-2ex,-2ex) {0};
+
+		%Circuit
+		\coordinate (A) at (0,0);
+		\coordinate (P) at (5,0);
+		\def\x{6}
+		\ctikzset{quadpoles/transformer core/height=3.5}
+		\ctikzset{transformer L1/.style={inductors/coils=4, inductors/width=1.6}}
+		\ctikzset{transformer L2/.style={inductors/coils=6, inductors/width=2.4}}
+		
+		\draw 
+		(0,0) node[transformer core] (T) {}
+		(T.A1) -- ++(-0.8,0) coordinate (P') to[sV, v_<, name=v_in] (P' |- T.A2) -- (T.A2);
+		
+		\coordinate (up) at (P |- T.B1);
+		\coordinate (UP) at ($(up)-(0,0.5)$);
+		\coordinate (down) at (P |- T.B2);
+		\coordinate (DOWN) at ($(down)+(0,0.5)$);
+		\coordinate (right) at ($(P)+(2,0)$);
+		\coordinate (left) at ($(P)-(2,0)$);
+		\coordinate (P1) at ($(left)-(1,3.5)$);
+		\coordinate (P2) at ($(left)-(1,0)$);
+		
+		\draw 
+		(T.B1) to[short, i^>=$i_+$] (up) -- (UP) 
+				to[full diode, *-*, l_=$D_1$, name=d1, v^<] (right)
+		(T.B2) to[short, i_>=$i_-$] (down) -- (DOWN)	
+				to[diode, *-*, l=$D_2$, name=d2, v_<] (right)
+		(left) to [full diode, *-*, l^=$D_3$, name=d3, v_<] (DOWN) 
+		(left) to[diode, *-*, l_=$D_4$, name=d4, v^<] (UP)
+		(right) to[short, *-*, i^>=$i_r$] ++(3,0) 
+				to[R, *-*, l_=$R$, v^<, name=vr1] ++(0,-3.5) node[ground] {} -- (P1)
+				to[kinky cross=(down)--(T.B2), kinky crosses=left] (P2) -- (left);
+
+		%Voltages
+		\fixedvlen[0.4cm]{d1}{$V_{D_1}$}
+		\fixedvlendashed[0.4cm]{d2}{$V_{D_2}$}
+		\fixedvlen[0.4cm]{d3}{$V_{D_3}$}				
+		\fixedvlendashed[0.4cm]{d4}{$V_{D_4}$}
+		\fixedvlen[0.4cm]{v_in}{$v_\text{in}$}
+		\fixedvlen[0.4cm]{vr1}{$v_{R}$}
+		\draw[-{Triangle[round,open]}] ($(T.B2)+(0,+1)$) -- ($(T.B1)-(0,1)$);
+		\draw[dashed, {Triangle[round,open]}-] ($(T.B2)+(0.4,+1)$) -- ($(T.B1)+(0.4,-1)$);
+		
+		%Nodes
+		\node[above left] at (left) {$-$};
+		\node[above right] at (right) {$+$};
+	\end{circuitikz}
+\end{document}

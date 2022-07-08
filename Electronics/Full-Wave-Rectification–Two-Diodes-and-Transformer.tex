@@ -1,0 +1,103 @@
+\documentclass[border=3pt]{standalone}
+
+% Circuits
+\usepackage[european,s traightvoltages, RPvoltages, americanresistor, americaninductors]{circuitikz}
+\tikzset{every picture/.style={line width=0.2mm}}
+
+% Notation
+\usepackage{amsmath}
+
+% Tikz Library
+\usetikzlibrary{calc}
+
+% Bipoles Specifications
+\ctikzset{bipoles/thickness=1.2, label distance=1mm, voltage shift = 1}
+
+% Arrows Above Compenents
+% Source: https://tex.stackexchange.com/questions/574576/circuitikz-straight-voltage-arrows-with-fixed-length
+\newcommand{\fixedvlen}[3][0.4cm]{% [semilength]{node}{label}
+    % get the center of the standard arrow
+    \coordinate (#2-Vcenter) at ($(#2-Vfrom)!0.5!(#2-Vto)$);
+    % draw an arrow of a fixed size around that center and on the same line
+    \draw[-{Triangle[round,open]}] ($(#2-Vcenter)!#1!(#2-Vfrom)$) -- ($(#2-Vcenter)!#1!(#2-Vto)$);
+    % position the label as it where if standard voltages were used
+    \node[ anchor=\ctikzgetanchor{#2}{Vlab}] at (#2-Vlab) {#3};
+}
+\newcommand{\fixedvlendashed}[3][0.75cm]{% [semilength]{node}{label}
+    % get the center of the standard arrow
+    \coordinate (#2-Vcenter) at ($(#2-Vfrom)!0.5!(#2-Vto)$);
+    % draw an arrow of a fixed size around that center and on the same line
+    \draw[dashed,-{Triangle[round,open]}] ($(#2-Vcenter)!#1!(#2-Vfrom)$) -- ($(#2-Vcenter)!#1!(#2-Vto)$);
+    % position the label as it where if standard voltages were used
+    \node[ anchor=\ctikzgetanchor{#2}{Vlab}] at (#2-Vlab) {#3};
+}
+
+% Kink Crossing
+\tikzset{
+    declare function={% in case of CVS which switches the arguments of atan2
+        atan3(\a,\b)=ifthenelse(atan2(0,1)==90, atan2(\a,\b), atan2(\b,\a));
+    },
+    kinky cross radius/.initial=+.15cm,
+    @kinky cross/.initial=+,
+    kinky crosses/.is choice,
+    kinky crosses/left/.style={@kinky cross=-},
+    kinky crosses/right/.style={@kinky cross=+},
+    kinky cross/.style args={(#1)--(#2)}{
+        to path={
+            let \p{@kc@}=($(\tikztotarget)-(\tikztostart)$),
+            \n{@kc@}={atan3(\p{@kc@})+180} in
+            -- ($(intersection of \tikztostart--{\tikztotarget} and #1--#2)!%
+            \pgfkeysvalueof{/tikz/kinky cross radius}!(\tikztostart)$)
+            arc [ radius     =\pgfkeysvalueof{/tikz/kinky cross radius},
+            start angle=\n{@kc@},
+            delta angle=\pgfkeysvalueof{/tikz/@kinky cross}180 ]
+            -- (\tikztotarget)
+        }
+    }
+}
+
+\begin{document}
+	\begin{circuitikz}
+%		%Grid
+%		\def\length{6}
+%		\draw[thin, dotted] (-\length,-\length) grid (\length,\length);
+%		\foreach \i in {1,...,\length}
+%		{
+%			\node at (\i,-2ex) {\i};
+%			\node at (-\i,-2ex) {-\i};	
+%		}
+%		\foreach \i in {1,...,\length}
+%		{
+%			\node at (-2ex,\i) {\i};	
+%			\node at (-2ex,-\i) {-\i};	
+%		}
+%		\node at (-2ex,-2ex) {0};
+		
+		%Circuit
+		\coordinate (A) at (0,0);
+		\def\x{6}
+		\ctikzset{quadpoles/transformer core/height=2.7}
+		\ctikzset{transformer L1/.style={inductors/coils=4, inductors/width=1.5}}
+		\ctikzset{transformer L2/.style={inductors/coils=6, inductors/width=2.2}}
+		
+		\draw 
+		(0,0) node[transformer core] (T) {}
+		(T.A1) -- ++(-0.8,0) coordinate (P') to[sV, v_<, name=v_in] (P' |- T.A2) -- (T.A2);
+		
+		\draw 
+		(T.B1) to[full diode, l=$D_1$, v<, name=d1, i=$i_{d_1}$] ++(0.7*\x,0) coordinate (D1)
+				to[short, i=$i_{r}$] ++(0.3*\x,0) coordinate (P)
+				to[R, l=$R$] ( P |- A) node[ground] (ground) {} to[short,*-] (T-L2.midtap)
+		(T.B2) to[full diode, l_=$D_2$, v^<, name=d2, i=$i_{d_2}$] ++(0.7*\x,0) coordinate (D2)
+		(D2) to[kinky cross=(ground)--(T-L2.midtap), kinky crosses=left] (D1);
+		
+		%Voltages
+		\fixedvlen[0.4cm]{d1}{$V_{D_1}$}
+		\fixedvlendashed[0.4cm]{d2}{$V_{D_2}$}		
+		\fixedvlen[0.4cm]{v_in}{$v_\text{in}$}
+		\draw[-{Triangle[round,open]}] ($(T.B2)+(0,+0.3)$) -- ++(0,1.3);
+		\draw[dashed, {Triangle[round,open]}-] ($(T.B2)+(0.4,+0.3)$) -- ++(0,1.3);
+		\draw[{Triangle[round,open]}-] ($(T.B1)+(0,-0.3)$) -- ++(0,-1.3);
+		\draw[dashed, -{Triangle[round,open]}] ($(T.B1)+(0.4,-0.3)$) -- ++(0,-1.3);
+	\end{circuitikz}
+\end{document}
