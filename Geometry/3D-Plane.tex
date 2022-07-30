@@ -1,0 +1,67 @@
+\documentclass[border=3pt]{standalone}
+
+%Drawing
+\usepackage{tikz}
+
+%Tikz Library
+\usetikzlibrary{calc}
+
+%Notation
+\usepackage{physics}
+
+\begin{document}
+
+% All numbers must be in [0,1] to fall in the plane drawn
+\def\t{-0.9}
+\def\s{0.04}
+\def\tt{-0.3}
+\def\ss{0.7}
+\def\ttt{-0.5}
+\def\sss{0.5}
+	
+\begin{tikzpicture}[x={(1cm,0.4cm)}, y={(8mm, -3mm)}, z={(0cm,1cm)}, line cap=round, line join=round]
+	%Coordinates
+	%Plane Vertex Points
+	\coordinate (x1) at (-2,2,3);
+	\coordinate (x2) at (2,2,5);
+	\coordinate (x3) at (2,-2,5);
+	\coordinate (x4) at (-2,-2,3);
+	%Vectors Parallel to Plane
+	\coordinate (n1) at ($(x2) - (x1)$);
+	\coordinate (n2) at ($(x3) - (x2)$); 
+	%Points on Plane
+	\coordinate (x5) at ($(x1) + \s*(n1) - \t*(n2)$);
+	\node[outer sep = 1pt, inner sep = 1pt] (x6) at ($(x1) + \ss*(n1) - \tt*(n2)$) {};
+	\coordinate (x7) at ($(x1) + \sss*(n1) - \ttt*(n2)$);
+	%Beginning of Axis
+	\coordinate (O) at (0,0,0);
+	%Random Point
+	\node[outer sep = 1pt, inner sep = 1pt] (P) at (2.5,1,5.5) {};
+	
+	%Axis 	
+	\draw[-latex] (-2.5,0,0) -- (2.5,0,0) node[pos = 1.05] {$x$};
+	\draw[-latex] (0,-3.5,0) -- (0,3.5,0) node[pos = 1.05] {$y$};
+	\draw[-latex] (0,0,0) -- (0,0,7) node[pos = 1.05] {$z$};
+	\draw[draw=black, fill=black] (O) circle (1pt) node[below] {${O}$};
+	
+	%Point on Plane
+	\draw[-latex, thick] (O) -- (x6) node[pos=0.45, shift={(0.1,0.3)}] {$\vb{r_o}$};
+	%Plane
+	\path[draw=black, fill=black!20, thick, opacity = 0.8] (x1) -- (x2) -- (x3) -- (x4) -- (x1);
+	\node[shift={(-0.45,0.6)}] at (x3) {$\Pi$};
+	%Perpendicular Vector
+	\draw[-latex, thick] (x5) -- ($(x5)!0.07!(-8,0,24)$) node[pos=0.5, shift={(-0.2,-0.1)}] {$\vb{u}$};
+	%Point on Plane	
+	\draw[draw=black, fill=black] (x6) circle (1pt) node[above right] {${P_o}$};
+	
+	%Z-axis Section
+	\draw[draw=black, fill=black] (x7) circle (0.5pt);
+	\draw (x7) -- (0,0,6.5);
+	
+%	%Random Point
+%	\draw[-latex, thick] (O) -- (P) node[pos=0.45, shift={(0.1,0.3)}] {$\vb{r}$};
+%	\draw[draw=black, fill=black] (P) circle (1pt) node[above right] {$\mathrm{P}$};
+	
+\end{tikzpicture}
+	
+\end{document}
