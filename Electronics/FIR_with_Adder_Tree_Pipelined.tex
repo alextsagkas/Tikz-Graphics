@@ -1,0 +1,118 @@
+\documentclass[border = 3pt]{standalone}
+
+% Packages
+\usepackage{tikz}
+\usetikzlibrary{calc, shapes.geometric}
+
+% Defaults
+% Thicker Lines
+\tikzset{every path/.append style=semithick}
+% Triangle Node
+\tikzset{
+	triangle/.style = {
+					    fill=blue!20, 
+					    regular polygon, 
+					    regular polygon sides=3, 
+					    rotate=180
+					  }
+}
+
+
+% D Flip-Flop Node
+\newcommand{\DFF}[3]{%
+	\node (#2) at (#1) [draw, fill = black!5, minimum width=1, minimum height=1] {$z^{-1}$};%
+	\node[shift={(0,0.7)}] at (#1) {DFF#3}
+}
+\newcommand{\DFFnoLabel}[2]{%
+	\node (#2) at (#1) [draw, fill = black!5, minimum width=1, minimum height=1] {$z^{-1}$}%
+}
+
+% Adder Node
+\newcommand{\Adder}[2]{%
+	\node (#2) at (#1) [draw, circle, fill = black!15, inner sep=2pt, minimum size=3pt] {$\mathbf+$}%
+}
+
+% Multiplier Node
+\newcommand{\Multiplier}[3]{%
+	\node (#2) at (#1) [draw, triangle, fill = black!30, inner sep=0.5pt, minimum size=3pt] {$\mathbf\times$};%
+	\node[shift={(-0.6,0)}] at (#1) {$h_{#3}$}
+}
+
+% Constants
+\def\x{2}          % x distance
+\def\in_out_x{1.2} % distance between last component and input, output
+\def\y{2.2}        % y distance
+\def\num{7}        % number of coefficients (2^x - 1, x = 2, 3, 4, ...)
+
+\begin{document}
+	
+	\begin{tikzpicture}[line cap = round, line join = round]
+		% Coordinates
+		\coordinate (Input) at (-6,4);
+		     
+		% Multipliers & 1st Row of DFFs
+		\foreach \i [evaluate=\i as \index using int(\num-\i)] in {0, 1, ..., \num} {
+			\draw ($(Input) + (\in_out_x+\x*\i,0)$) -- ++(0,-0.5*\y) coordinate (h\i);
+			%		  
+			\Multiplier{h\i}{mul\i}{\i};
+			%
+			\draw (mul\i) -- ++(0, -0.45*\y) coordinate (MUL\i);
+			%
+			\DFFnoLabel{MUL\i}{DFF-1\i};
+		}
+		
+		% Adder & DFF Tree
+		\coordinate (start) at ($(DFF-10) + (0.5*\x, -0.23*\y)$);
+		
+		\pgfmathsetmacro{\levelmax}{int(ceil(log2(\num+1)-1))}
+		\foreach \level in {0, ..., \levelmax} {
+			%
+			\pgfmathsetmacro{\dis}{2^(\level)-1}
+			\pgfmathsetmacro{\disy}{\level};  
+			%
+			\coordinate (start\level) at ($(start) + (\dis*\x, -0.23*\disy*\y)$);
+			%
+			\pgfmathsetmacro{\vertexmax}{2^(\levelmax-\level)-1};
+			%
+			\foreach \vertex in {0, ..., \vertexmax} {
+				%
+				\pgfmathsetmacro{\disx}{2*\vertex*2^(\level)};  
+				\pgfmathsetmacro{\disy}{\level};
+				\coordinate (vertex\level\vertex) at ($(start\level) + (\disx*\x, -0.35*\disy*\y)$);
+				\Adder{vertex\level\vertex}{adder\level\vertex};
+				%
+				\node[inner sep=8pt] (VERTEX\level\vertex) at ($(adder\level\vertex) + (0,-0.35*\y)$) {};
+				\DFFnoLabel{VERTEX\level\vertex}{DFF\level\vertex};
+				% Connect Adder to DFF				
+				\draw (adder\level\vertex) -- (DFF\level\vertex);
+				% Connecting Vertexes
+				\pgfmathsetmacro{\downleft}{int(2*\vertex)};
+				\pgfmathsetmacro{\downright}{int(\downleft+1)};
+				\pgfmathsetmacro{\downlevel}{int(\level-1)};
+				\draw (DFF\downlevel\downleft) -- ++(0,-0.23*\y) -- (adder\level\vertex);
+				\draw (DFF\downlevel\downright) -- ++(0,-0.23*\y) -- (adder\level\vertex);
+			}
+		}
+		
+		% From Input to Last Multiplier
+		\draw (Input) -- ++($(\in_out_x,0) + (\num*\x,0)$);
+		
+		% DFFs on Input Line
+		\pgfmathsetmacro{\dffnum}{\num-1}
+		\foreach \i in {0, 1, ..., \dffnum} {
+			\coordinate (DFF_in) at ($(Input) + (\in_out_x+\x*\i + 0.5*\x,0)$);
+			%		  
+			\pgfmathsetmacro{\inext}{int(\i+1)};
+			\DFF{DFF_in}{DFF_in\i}{\inext};
+		}
+		
+		% From Last Adder to Output
+		\draw (DFF\levelmax0) -- ++(0,-\in_out_x) coordinate (Output);
+		
+		% Nodes for Input and Output
+		\node[left] at (Input) {$x[n]$};
+		\node[below] at (Output) {$y[n]$};
+			
+	\end{tikzpicture}
+	
+\end{document}
