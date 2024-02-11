@@ -1,0 +1,39 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, arrows, calc}
+
+\tikzset{
+	->,  % makes the edges directed
+	>=stealth, % makes the arrow heads bold
+	shorten >=2pt, shorten <=2pt, % shorten the arrow
+	node distance=3cm, % specifies the minimum distance between two nodes. Change if n
+	every state/.style={draw=blue!55,very thick,fill=blue!20}, % sets the properties for each ’state’ n
+	initial text=$ $, % sets the text that appears on the start arrow
+ }
+
+\begin{document}
+	\begin{tikzpicture}
+		\node[state, initial] (s0) {$S_0$};
+		\node[state, right of=s0] (s1) {$S_1$};
+		\node[state, right of=s1] (s2) {$S_2$};
+		\node[state, right of=s2] (s3) {$S_3$};
+		\node[state, right of=s3] (s4) {$S_4$};
+		
+		\draw (s0) edge[loop above] node{$0,0$} (s0)
+			  (s0) edge[bend left] node[above]{$1,0$} (s1)
+			  %
+			  (s1) edge[bend left] node[above]{$0,0$} (s2)
+			  (s1) edge[bend left] node[above]{$1,0$} (s0)
+			  %
+			  (s2) edge[bend left] node[above]{$0,0$} (s3)
+			  (s2) edge[bend left=40] node[above]{$1,0$} (s0)
+			  %
+			  (s3) edge[bend left=50] node[above]{$0,0$} (s0)
+			  (s3) edge[bend left] node[above]{$1,0$} (s4)
+			  %
+			  (s4) edge[bend right=50] node[above]{$0,1$} (s0)
+			  (s4) edge[bend left=60] node[above]{$1,0$} (s0)
+		;
+	\end{tikzpicture}
+\end{document}

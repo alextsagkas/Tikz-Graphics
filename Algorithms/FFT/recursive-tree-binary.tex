@@ -1,0 +1,73 @@
+\documentclass{standalone}
+
+\usepackage[edges]{forest}
+\usepackage{xcolor}
+
+\definecolor{mycolor0}{RGB}{44, 117, 226}
+\definecolor{mycolor1}{RGB}{255, 103, 15}
+
+\begin{document}
+	\begin{forest}
+		for tree={
+			draw,
+			fill=gray!30,
+			s sep+=1ex,
+			l sep+=4ex,
+			math content,
+			edge={semithick},
+			where n children={0}{}{label={}}}
+		[{
+			a_{00{\color{mycolor0}0}}~~
+			a_{00{\color{mycolor1}1}}~~
+			a_{01{\color{mycolor0}0}}~~
+			a_{01{\color{mycolor1}1}}~~
+			a_{10{\color{mycolor0}0}}~~
+			a_{10{\color{mycolor1}1}}~~
+			a_{11{\color{mycolor0}0}}~~
+			a_{11{\color{mycolor1}1}}
+		  }
+		 [{
+		 	a_{0{\color{mycolor0}0}0}~~
+		 	a_{0{\color{mycolor1}1}0}~~
+		 	a_{1{\color{mycolor0}0}0}~~
+		 	a_{1{\color{mycolor1}1}0}
+		  }, for tree={edge=mycolor0}
+		  [{
+		  	a_{{\color{mycolor0}0}00}~~
+		  	a_{{\color{mycolor1}1}00}
+		   }
+		   [a_{000}, for tree={edge=mycolor0}]
+		   [a_{100}, for tree={edge=mycolor1}]
+		  ]
+		  [{
+		  	a_{{\color{mycolor0}0}10}~~
+		  	a_{{\color{mycolor1}1}10}
+		   }, for tree={edge=mycolor1}
+		   [a_{010}, for tree={edge=mycolor0}]
+		   [a_{110}, for tree={edge=mycolor1}]
+		  ]
+		 ]
+		 [{
+		 	a_{0{\color{mycolor0}0}1}~~
+		 	a_{0{\color{mycolor1}1}1}~~
+		 	a_{1{\color{mycolor0}0}1}~~
+		 	a_{1{\color{mycolor1}1}1}
+		  }, for tree={edge=mycolor1}
+		  [{
+		  	a_{{\color{mycolor0}0}01}~~
+		  	a_{{\color{mycolor1}1}01}
+		  }, for tree={edge=mycolor0}
+		   [a_{001}, for tree={edge=mycolor0}]
+		   [a_{101}, for tree={edge=mycolor1}]
+		  ]
+		  [{
+		  	a_{{\color{mycolor0}0}11}~~
+		  	a_{{\color{mycolor1}1}11}
+		   }, for tree={edge=mycolor1}
+		   [a_{011}, for tree={edge=mycolor0}]
+		   [a_{111}, for tree={edge=mycolor1}]
+		  ]
+		 ]
+		];
+	\end{forest}
+\end{document}

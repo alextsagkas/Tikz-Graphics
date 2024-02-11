@@ -1,0 +1,69 @@
+\documentclass{standalone}
+
+\usepackage[edges]{forest}
+
+\begin{document}
+	\begin{forest}
+		for tree={
+			draw,
+			fill=gray!30,
+			s sep+=3ex,
+			l sep+=4ex,
+			math content,
+			edge={semithick},
+			where n children={0}{}{label={}}}
+		[{
+			a_{0}~~
+			a_{1}~~
+			a_{2}~~
+			a_{3}~~
+			a_{4}~~
+			a_{5}~~
+			a_{6}~~
+			a_{7}
+		  }
+		 [{
+		 	a_{0}~~
+		 	a_{2}~~
+		 	a_{4}~~
+		 	a_{6}
+		  }
+		  [{
+		  	a_{0}~~
+		  	a_{4}
+		   }
+		   [a_{0}]
+		   [a_{4}]
+		  ]
+		  [{
+		  	a_{2}~~
+		  	a_{6}
+		   }
+		   [a_{2}]
+		   [a_{6}]
+		  ]
+		 ]
+		 [{
+		 	a_{1}~~
+		 	a_{3}~~
+		 	a_{5}~~
+		 	a_{7}
+		  }
+		  [{
+		  	a_{1}~~
+		  	a_{5}
+		  }
+		   [a_{1}]
+		   [a_{5}]
+		  ]
+		  [{
+		  	a_{3}~~
+		  	a_{7}
+		   }
+		   [a_{3}]
+		   [a_{7}]
+		  ]
+		 ]
+		];
+	\end{forest}
+\end{document}
