@@ -1,0 +1,79 @@
+\documentclass[border=3pt]{standalone}
+
+%%Fonts
+%\usepackage{fontspec}
+%\setmainfont[Mapping=tex-text]{JetBrains Mono}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% Sizes
+\def\cellheight{30pt}
+\def\fieldlinewidth{0.7pt}
+\pgfmathsetlengthmacro{\scalefactor}{4pt}
+
+% Tikz Set
+\tikzset{
+	instr_field/.style={
+		draw, 
+		rectangle,
+		line width = \fieldlinewidth,
+		minimum height = \cellheight,
+	},
+	byte_values/.style={above, font=\tiny},
+	bytes/.style={above, font=\scriptsize},
+	every text node part/.style={align=center}
+}
+
+% Instruction Fields
+\def\fields{
+	cond/31/28/-1, 
+	op/27/26/00, 
+	I/25/25/1, 
+	cmd/24/21/0100, 
+	S/20/20/-1, 
+	Rn/19/16/-1, 
+	Rd/15/12/-1,
+	rot/11/8/0000,
+	imm8/7/0/-1
+}
+
+\begin{document}
+	\begin{tikzpicture}		
+		% Widths
+		\foreach \field/\high/\low in \fields {
+		    \pgfmathsetmacro{\width}{(\high-\low + 1) * \scalefactor}
+		    \expandafter\xdef\csname \field w\endcsname{\width mm}
+		}
+		
+		% Instruction Fields
+		\foreach \field/\high/\low/\value [count=\i from 0] in \fields {
+			\ifnum\i=0
+				\node[
+					   instr_field, 
+					   anchor=west,
+					   minimum width=\csname\field w\endcsname] (tmp\i) {\field};
+			\else
+				\pgfmathsetmacro{\prev}{int(\i-1)}
+				\node[
+					   instr_field,
+					   anchor=west,
+					   minimum width=\csname\field w\endcsname] (tmp\i) at ($(tmp\prev.east)-(\fieldlinewidth,0)$) {\field};
+			\fi 
+			
+			\ifnum\high=\low
+				\node[bytes] at (tmp\i.north) {\high};
+			\else
+				\node[bytes] at (tmp\i.north) {\high:\low};
+			\fi
+			
+			\ifnum\value=-1\else
+				\node[byte_values] at (tmp\i.south) {\value};
+			\fi
+		}
+		
+		% Name
+%		\node[anchor=east, xshift=-40pt] at (tmp0) {ADD(S)-I};
+	\end{tikzpicture}
+\end{document}
